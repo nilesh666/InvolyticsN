@@ -13,15 +13,14 @@ class Agents:
         try:
             agent = Agent(
                 model = Groq(id="llama-3.3-70b-versatile", api_key=groq_api),
-                tools=[fetch_raw, fetch_responses, fetch_local_raw],
+                tools=[MongoTools()],
                 description="You are a Mongo DB expert and can help with queries and database management tasks.",
                 instructions="""Always summarize the data retrieved from MongoDB instead of printing it directly. 
                                 Before inserting, check whether the new data already exists in the collection to prevent 
                                 duplicate records. Never mention the tools or variables or collections from MongoDB used in your response.""",
-                markdown=True
+                # markdown=True
             )
             response = agent.run(query)
-            
             return response
         except Exception as e:
             raise CustomException(e, sys)
@@ -33,7 +32,7 @@ class Agents:
                 tools=[],
                 description="You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis",
                 instructions="Always summarize the data retrieved from Postgres instead of printing it directly.",
-                markdown=True
+                # markdown=True
             )
             response = agent.run(query)
             return response
@@ -43,7 +42,7 @@ class Agents:
 if __name__ == "__main__":
     try:
         logging.info("Testing Mongo Agent")
-        mongo_query = "Are there any files that are not loaded to MongoDB"
+        mongo_query = "what are the file names in raw collection"
         mongo_response = Agents().mongo_agent(mongo_query)
         # print("Mongo Agent Response:\n", mongo_response)
         pprint_run_response(mongo_response, markdown=True)

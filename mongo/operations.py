@@ -12,7 +12,6 @@ class Operations:
             logging.info("MongoDB connection successful")
         except Exception as e:
             raise CustomException(e, sys)
-        
         self.db = self.client[db_name]
 
     def insert(self, collection_name:str, data):
@@ -23,7 +22,6 @@ class Operations:
             return result.inserted_ids
         except Exception as e:
             raise CustomException(e, sys)
-
 
     def delete(self, collection_name:str, data):
         try:

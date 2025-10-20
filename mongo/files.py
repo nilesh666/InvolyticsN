@@ -33,13 +33,13 @@ class FileHandler:
         except Exception as e:
             raise CustomException(e, sys)
     
-    def convert(self, file_path): 
-        try:
-            with open(file_path, "rb") as file:
-                encoded_string = base64.b64encode(file.read()).decode('utf-8')
-            return encoded_string
-        except Exception as e:
-            raise CustomException(e, sys)
+    # def convert(self, file_path): 
+    #     try:
+    #         with open(file_path, "rb") as file:
+    #             encoded_string = base64.b64encode(file.read()).decode('utf-8')
+    #         return encoded_string
+    #     except Exception as e:
+    #         raise CustomException(e, sys)
     
     def get_responses(self, collection_name:str):
         try:
