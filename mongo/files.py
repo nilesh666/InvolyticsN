@@ -25,10 +25,10 @@ class FileHandler:
         except Exception as e:
             raise CustomException(e, sys)
     
-    def get_local_raw(self):
+    def get_local_raw(self,local_path:str):
         try:
             import os
-            files = os.listdir(self.local_path)
+            files = os.listdir(local_path)
             return files
         except Exception as e:
             raise CustomException(e, sys)

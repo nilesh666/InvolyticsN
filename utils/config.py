@@ -6,6 +6,11 @@ load_dotenv()
 hf_token = os.getenv("HF_TOKEN")
 groq_api = os.getenv("GROQ_API_KEY")
 
+mongo_uri = os.getenv("MONGO_URI")
+mongo_db_name = os.getenv("MONGO_DB_NAME")
+
+local_folder_path = os.getenv("LOCAL_FOLDER_PATH")
+
 image_extraction_prompt = """
 You are an intelligent document extraction assistant.
 Your goal is to extract all relevant information from the given invoice (in text or image form) and return the output in strict JSON format.
