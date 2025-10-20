@@ -53,9 +53,10 @@ class FileHandler:
 #     from dotenv import load_dotenv
 #     import os
 #     load_dotenv()
+#     local_path = os.getenv("LOCAL_FOLDER_PATH")
 #     uri = os.getenv("MONGO_URI")
 #     instance = FileHandler(uri, "ImageProcessing")
-#     raw = instance.get_raw("raw")
+#     raw = instance.get_local_raw(local_path)
 #     print("raw: ", raw)
     
 
