@@ -4,6 +4,7 @@ import os
 load_dotenv()
 
 hf_token = os.getenv("HF_TOKEN")
+groq_api = os.getenv("GROQ_API_KEY")
 
 image_extraction_prompt = """
 You are an intelligent document extraction assistant.
