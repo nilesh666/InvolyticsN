@@ -5,3 +5,4 @@ agno
 pymongo
 python-dotenv
 pillow
+huggingface_hub
