@@ -26,6 +26,7 @@ AgnoInstrumentor().instrument()
 
 hf_token = os.getenv("HF_TOKEN")
 groq_api = os.getenv("GROQ_API_KEY")
+gemini_api = os.getenv("GEMINI_API_KEY")
 
 mongo_uri = os.getenv("MONGO_URI")
 mongo_db_name = os.getenv("MONGO_DB_NAME")

@@ -72,7 +72,7 @@ class MongoTools(Toolkit):
             
 
     # @tool(name="load_local_to_mongo", description="Loads local files to MongoDB 'raw' collection.")
-    def load_local_to_mongo(file_names, collection_name="raw"):
+    def load_local_to_mongo(self,collection_name="raw"):
         """
         Loads local files to MongoDB 'raw' collection.
 
@@ -86,21 +86,31 @@ class MongoTools(Toolkit):
         import base64
         import os
         try:
+            file_list = self.fetch_local_raw(collection_name)
             instance = Operations(mongo_uri, mongo_db_name)
             if not os.path.exists(local_folder_path):
                 return f"Local path {local_folder_path} does not exist."
-            local_files_path=[os.path.join(local_folder_path, i) for i in file_names]
-            converted_files = []
-            for i in local_files_path:
-                d={}
-                d["file_name"]=os.path.basename(i)
-                d["file_data"]=base64.b64encode(open(i, "rb").read()).decode('utf-8')
-                converted_files.append(d)
-            result = instance.insert(collection_name,converted_files) 
-            return result
+            
+            if file_list and type(file_list)!=str:
+                local_files_path=[os.path.join(local_folder_path, i) for i in file_list]
+                converted_files = []
+                for i in local_files_path:
+                    d={}
+                    d["file_name"]=os.path.basename(i)
+                    d["file_data"]=base64.b64encode(open(i, "rb").read()).decode('utf-8')
+                    converted_files.append(d)
+                result = instance.insert(collection_name,converted_files) 
+                return result
+            else:
+                return file_list
         except Exception as e:
             raise CustomException(e, sys)
 
+class ProcessTool(Toolkit):
+    pass
+
+class AnalysisTool(Toolkit):
+    pass
 
 # if __name__ == "__main__":
 #     import json
