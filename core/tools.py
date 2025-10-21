@@ -107,18 +107,62 @@ class MongoTools(Toolkit):
             raise CustomException(e, sys)
 
 class ProcessTool(Toolkit):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(name="process_tools", 
+                         tools = [
+                            self.process_data,
+                         ])
+
+    def process_data(raw_collection="raw",processed_collection="processed"):
+        from core.processing import ImageProcessor
+        from mongo.files import FileHandler
+        from mongo.operations import Operations
+        """
+        Processes the data from "raw" collection and stores it in "processed" collection. Do not change the input values for this function.
+
+        Args:
+            - raw_collection: "raw" (default)
+            - processed_collection: "processed" (default)
+        """
+        file_instance=FileHandler(mongo_uri, mongo_db_name)
+        raw_files = file_instance.get_raw(str(raw_collection))
+        processed_files = file_instance.get_response_file_names(str(processed_collection))
+        operation_instance = Operations(mongo_uri, mongo_db_name)
+        processor = ImageProcessor()
+        # print("raw_files:", raw_files)
+        # print("processed_files:", processed_files)
+        for i in raw_files:
+            if i in processed_files:
+                operation_instance.delete(processed_collection, {"file_name": i})
+                data = {}
+                vlm_response = processor.process(file_instance.get_file_data(i, raw_collection))
+                data = {
+                    "file_name": i,
+                    "vlm_response": vlm_response
+                }
+                if data:
+                    operation_instance.insert(processed_collection, [data])
+
+            else:
+                data = {}
+                vlm_response = processor.process(file_instance.get_file_data(i, raw_collection))
+                data = {
+                    "file_name": i,
+                    "vlm_response": vlm_response
+                }
+                if data:
+                    operation_instance.insert(processed_collection, [data])
+        
+    
 
 class AnalysisTool(Toolkit):
     pass
 
 # if __name__ == "__main__":
-#     import json
-#     file_names = ["batch1-0001.jpg", "batch1-0002.jpg", "batch1-0003.jpg"]
 #     try:
-#         l = load_local_to_mongo(file_names)
+#         l,d = process_data()
+#         print(l)
+#         for i in d:
+#             print(i["file_name"])
 #     except Exception as e:
 #         raise CustomException(e, sys)
-    # print(len(l))
-    # for i in l:
-    #     print(i["file_name"])
