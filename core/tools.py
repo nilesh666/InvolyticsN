@@ -134,29 +134,21 @@ class ProcessTool(Toolkit):
         for i in raw_files:
             if i in processed_files:
                 operation_instance.delete(processed_collection, {"file_name": i})
-                data = {}
-                vlm_response = processor.process(file_instance.get_file_data(i, raw_collection))
-                data = {
-                    "file_name": i,
-                    "vlm_response": vlm_response
-                }
-                if data:
-                    operation_instance.insert(processed_collection, [data])
-
-            else:
-                data = {}
-                vlm_response = processor.process(file_instance.get_file_data(i, raw_collection))
-                data = {
-                    "file_name": i,
-                    "vlm_response": vlm_response
-                }
-                if data:
-                    operation_instance.insert(processed_collection, [data])
+            data = {}
+            vlm_response = processor.process(file_instance.get_file_data(i, raw_collection))
+            data = {
+                "file_name": i,
+                "vlm_response": vlm_response
+            }
+            if data:
+                operation_instance.insert(processed_collection, [data])
         
     
 
 class AnalysisTool(Toolkit):
     pass
+
+    #------------------Start working from here------------------
 
 # if __name__ == "__main__":
 #     try:
