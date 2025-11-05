@@ -74,5 +74,4 @@ Follow these rules carefully:
     "gross_worth": 0
   }
 }
-
 """
