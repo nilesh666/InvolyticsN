@@ -119,7 +119,7 @@ class ImageProcessor:
             validated_response=client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=[response_text],
-                config=types.GenerateContentConfig(
+                config=genai.types.GenerateContentConfig(
                     response_mime_type="application/json",
                     response_shcema=Invoice
                 )
