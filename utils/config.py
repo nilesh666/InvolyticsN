@@ -24,6 +24,9 @@ trace_api.set_tracer_provider(tracer_provider=tracer_provider)
 # Start instrumenting agno
 AgnoInstrumentor().instrument()
 
+#Gemini_API
+gemini=os.getenv("GEMINI_API_KEY")
+
 hf_token = os.getenv("HF_TOKEN")
 groq_api = os.getenv("GROQ_API_KEY")
 gemini_api = os.getenv("GEMINI_API_KEY")

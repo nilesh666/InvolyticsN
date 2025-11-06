@@ -1,23 +1,23 @@
 from huggingface_hub import InferenceClient
-from utils.config import *
+from utils.config import hf_token, gemini
 from utils.custom_exception import CustomException
-from typing import List, Annotated
+from typing import List
 import sys
 from utils.logger import logging
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field
 from datetime import date
-from decimal import Decimal
 import json
+from google import genai
 
 class InvoiceInfo(BaseModel):
-    number: PositiveInt=Field(None, description="Invoice number")    
+    number: int=Field(None, description="Invoice number")    
     date_of_invoice: date=Field(None, json_schema_extra= {"description": "Invoice date in YYYY-MM-DD format"})
 
 class Seller(BaseModel):
-    name: str = Field(None, json_schema_extra= {"description": "Seller's name"})
-    address: str = Field(None, json_schema_extra= {"description": "Seller's address"})
-    tax_id: str = Field(None, json_schema_extra= {"description": "Tax id"})
-    iban: str = Field(None, json_schema_extra={"description":"International Bank account number"})
+    name:str=Field(None, json_schema_extra= {"description": "Seller's name"})
+    address:str=Field(None, json_schema_extra= {"description": "Seller's address"})
+    tax_id:str=Field(None, json_schema_extra= {"description": "Tax id"})
+    iban: str=Field(None, json_schema_extra={"description":"International Bank account number"})
 
 class Client(BaseModel):
     name: str=Field(None, json_schema_extra={"description": "Client's name"})
@@ -25,20 +25,20 @@ class Client(BaseModel):
     tax_id: str=Field(None, json_schema_extra={"description": "Tax id"})
 
 class Item(BaseModel):
-    number: PositiveInt=Field(None, json_schema_extra={"description":"Item number"})
-    description: str=Field(None, json_schema_extra={"descritpion":"Description of the product or service"})
-    quantity: PositiveInt=Field(None, json_schema_extra={"description":"Qunatity purchased"})
+    number: int=Field(None, json_schema_extra={"description":"Item number"})
+    description: str=Field(None, json_schema_extra={"description":"Description of the product or service"})
+    quantity: int=Field(None, json_schema_extra={"description":"Qunatity purchased"})
     unit: str=Field(None, json_schema_extra={"description": "Describes how much for each"})
-    net_price: Annotated[Decimal, Field(strict=True, allow_inf_nan=True, json_schema_extra={"description":"Price per unit before vat"})]
-    net_worth: Annotated[Decimal, Field(strict=True, allow_inf_nan=True, json_schema_extra={"description" :"Total net worth"})]
-    vat_percentage: Annotated[Decimal, Field(strict=True, allow_inf_nan=True, json_schema_extra={"description":"vat percentage"})]
-    gross_worth: Annotated[Decimal, Field(strict=True, allow_inf_nan=True, json_schema_extra={"description": "Total of the product including everything"})]
+    net_price: float=Field(strict=True, allow_inf_nan=True, json_schema_extra={"description":"Price per unit before vat"})
+    net_worth: float=Field(strict=True, allow_inf_nan=True, json_schema_extra={"description" :"Total net worth"})
+    vat_percentage: float=Field(strict=True, allow_inf_nan=True, json_schema_extra={"description":"vat percentage"})
+    gross_worth: float=Field(strict=True, allow_inf_nan=True, json_schema_extra={"description": "Total of the product including everything"})
 
 class Summary(BaseModel):
-    vat_percentage: Annotated[Decimal, Field(strict=True, allow_inf_nan=True,json_schema_extra={"description":"vat percentage"})]
-    net_worth:  Annotated[Decimal, Field(strict=True, allow_inf_nan=True, json_schema_extra={"description": "Total net worth"})]
-    vat:  Annotated[Decimal, Field(strict=True, allow_inf_nan=True)]
-    gross_worth:  Annotated[Decimal, Field(strict=True, allow_inf_nan=True,json_schema_extra={"description":"Final total including everything"})]
+    vat_percentage:float=Field(strict=True, allow_inf_nan=True,json_schema_extra={"description":"vat percentage"})
+    net_worth:float=Field(strict=True, allow_inf_nan=True, json_schema_extra={"description": "Total net worth"})
+    vat:float=Field(strict=True, allow_inf_nan=True)
+    gross_worth:float=Field(strict=True, allow_inf_nan=True,json_schema_extra={"description":"Final total including everything"})
 
 class Invoice(BaseModel):
     seller: Seller
@@ -84,10 +84,10 @@ class Invoice(BaseModel):
         }
 
 class ImageProcessor:
-    def __init__(self, model_name="Qwen/Qwen2.5-VL-7B-Instruct", hf_token=hf_token, prompt=image_extraction_prompt):
+    def __init__(self, model_name="Qwen/Qwen2.5-VL-7B-Instruct", hf_token=hf_token):
         try:
             self.client = InferenceClient(model=model_name, token=hf_token)
-            self.prompt = prompt
+            # self.prompt = prompt
             logging.info(f"Connected to Hugging Face model: {model_name}") 
         except Exception as e:
             raise CustomException(e, sys)
@@ -113,22 +113,24 @@ class ImageProcessor:
                                 ]
                             }
                         ],
-                    response_format={
-                        "type": "json_schema",
-                        "json_schema": {
-                            "title": "Invoice",
-                            "schema": Invoice.model_json_schema()
-                        }
-                    }
                     )
             response_text = completion.choices[0].message.content
-            return response_text
-        
+            client=genai.Client(api_key=gemini)
+            validated_response=client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=[response_text],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_shcema=Invoice
+                )
+            )
+            return validated_response
+    
         except Exception as e:
             raise CustomException(e, sys)
     
-if __name__=="__main__":
-    schema = Invoice.model_json_schema()
-    print(json.dumps(schema, indent=2))
+# if __name__=="__main__":
+#     schema = Invoice.model_json_schema()
+#     print(json.dumps(schema, indent=2))
     
 
