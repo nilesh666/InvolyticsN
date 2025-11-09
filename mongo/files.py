@@ -59,17 +59,22 @@ class FileHandler:
         except Exception as e:
             raise CustomException(e, sys)
 
-# if __name__ == "__main__":
-#     from dotenv import load_dotenv
-#     import os
-#     import json
-#     load_dotenv()
-#     local_path = os.getenv("LOCAL_FOLDER_PATH")
-#     uri = os.getenv("MONGO_URI")
+if __name__ == "__main__":
+    from dotenv import load_dotenv
+    import os
+    import json
+    load_dotenv()
+    local_path = os.getenv("LOCAL_FOLDER_PATH")
+    uri = os.getenv("MONGO_URI")
+    db = os.getenv("MONGO_DB_NAME")
 #     instance = FileHandler(uri, "ImageProcessing")
 #     raw = instance.get_file_data("batch1-0001.jpg", "raw")
 #     with open("output.json", "w", encoding="utf-8") as f:
 #         json.dump(raw, f, indent=4, ensure_ascii=False)
+
+    # a = FileHandler(uri, db)
+    # l = a.get_file_data("batch1-0001.jpg", "raw")
+    # print(l[:20])
     
 
 

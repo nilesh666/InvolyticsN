@@ -87,7 +87,6 @@ class ImageProcessor:
     def __init__(self, model_name="Qwen/Qwen2.5-VL-7B-Instruct", hf_token=hf_token):
         try:
             self.client = InferenceClient(model=model_name, token=hf_token)
-            # self.prompt = prompt
             logging.info(f"Connected to Hugging Face model: {model_name}") 
         except Exception as e:
             raise CustomException(e, sys)
@@ -121,16 +120,10 @@ class ImageProcessor:
                 contents=[response_text],
                 config=genai.types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    response_shcema=Invoice
+                    response_schema=Invoice
                 )
             )
             return validated_response
     
         except Exception as e:
             raise CustomException(e, sys)
-    
-# if __name__=="__main__":
-#     schema = Invoice.model_json_schema()
-#     print(json.dumps(schema, indent=2))
-    
-

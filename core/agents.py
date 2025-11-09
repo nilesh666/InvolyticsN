@@ -6,7 +6,6 @@ from utils.config import groq_api, gemini_api
 from utils.custom_exception import CustomException
 import sys
 from utils.logger import logging
-from core.tools import *
 from agno.utils.pprint import pprint_run_response
 from agno.guardrails import PIIDetectionGuardrail, PromptInjectionGuardrail
 
@@ -26,6 +25,9 @@ class Agents:
                                 If asked for sensitive information, politely decline to disclose it.
                                 Use ProcessTool only to exclusively extract and process content from images.
                                 Store processed outputs in the "processed" collection and raw data in the "raw" collection within MongoDB.
+                                Use only "process_data" tool to process the data. 
+                                Use "fetch_local_raw tool to list the file names that are not loaded to the "raw" collection.
+                                Use fetch_raw tool to list the raw file names that are not processed.
                                 """,
                 pre_hooks = [PIIDetectionGuardrail(), PromptInjectionGuardrail()],
                 # markdown=True
@@ -52,7 +54,7 @@ class Agents:
 if __name__ == "__main__":
     try:
         logging.info("Testing Mongo Agent")
-        mongo_query = "Process the files"
+        mongo_query = "Process the files"""
         mongo_response = Agents().mongo_agent(mongo_query)
         # print("Mongo Agent Response:\n", mongo_response)
         pprint_run_response(mongo_response, markdown=True)

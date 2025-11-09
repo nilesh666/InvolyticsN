@@ -25,7 +25,8 @@ class MongoTools(Toolkit):
             if not raw_data:
                 return "Raw collection is empty"
             if isinstance(raw_data, list):
-                return " ".join(map(str, raw_data))
+                # return ", ".join(map(str, raw_data))
+                return list(raw_data)
             else:
                 return f"Unspupported data format: {type(raw_data)}"
         except Exception as e:
@@ -35,7 +36,7 @@ class MongoTools(Toolkit):
     def fetch_local_raw(self, collection_name="raw"):
         from mongo.files import FileHandler
         """
-        Fetches file names of unporcessed/raw data from a local directory. It returns a list of file names.
+        Fetches file names of unporcessed/raw data from the local directory. It returns a list of file names.
         """
         from utils.config import local_folder_path
         try:
@@ -113,7 +114,7 @@ class ProcessTool(Toolkit):
                             self.process_data,
                          ])
 
-    def process_data(raw_collection="raw",processed_collection="processed"):
+    def process_data(self,raw_collection="raw",processed_collection="processed"):
         from core.processing import ImageProcessor
         from mongo.files import FileHandler
         from mongo.operations import Operations
@@ -124,6 +125,8 @@ class ProcessTool(Toolkit):
             - raw_collection: "raw" (default)
             - processed_collection: "processed" (default)
         """
+        # print(f"R_str: {raw_collection}")
+        # print(f"P_str: {processed_collection}")
         file_instance=FileHandler(mongo_uri, mongo_db_name)
         raw_files = file_instance.get_raw(str(raw_collection))
         processed_files = file_instance.get_response_file_names(str(processed_collection))
@@ -131,6 +134,7 @@ class ProcessTool(Toolkit):
         processor = ImageProcessor()
         # print("raw_files:", raw_files)
         # print("processed_files:", processed_files)
+        l=[]
         for i in raw_files:
             if i in processed_files:
                 operation_instance.delete(processed_collection, {"file_name": i})
@@ -140,10 +144,12 @@ class ProcessTool(Toolkit):
                 "file_name": i,
                 "vlm_response": vlm_response
             }
+            l.append(data)
             if data:
                 operation_instance.insert(processed_collection, [data])
-        
-    
+        return [i["file_name"] for i in l]
+            
+
 
 class AnalysisTool(Toolkit):
     pass
@@ -152,9 +158,10 @@ class AnalysisTool(Toolkit):
 
 # if __name__ == "__main__":
 #     try:
-#         l,d = process_data()
+#         a = ProcessTool()
+#         l = a.process_data()
 #         print(l)
-#         for i in d:
-#             print(i["file_name"])
+#         # for i in d:
+#         #     print(i["file_name"])
 #     except Exception as e:
 #         raise CustomException(e, sys)
