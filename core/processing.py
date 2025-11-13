@@ -6,7 +6,6 @@ import sys
 from utils.logger import logging
 from pydantic import BaseModel, Field
 from datetime import date
-import json
 from google import genai
 
 class InvoiceInfo(BaseModel):

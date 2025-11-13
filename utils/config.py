@@ -34,6 +34,12 @@ gemini_api = os.getenv("GEMINI_API_KEY")
 mongo_uri = os.getenv("MONGO_URI")
 mongo_db_name = os.getenv("MONGO_DB_NAME")
 
+postgres_db=os.getenv("POSTGRES_DB")
+postgres_user=os.getenv("POSTGRES_USER")
+postgres_password=os.getenv("POSTGRES_PASSWORD")
+postgres_host=os.getenv("POSTGRES_HOST")
+postgres_port=os.getenv("POSTGRES_PORT")
+
 local_folder_path = os.getenv("LOCAL_FOLDER_PATH")
 
 

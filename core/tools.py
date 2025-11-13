@@ -1,5 +1,6 @@
 from agno.tools import tool, Toolkit
-from utils.config import mongo_uri, mongo_db_name
+from agno.tools.postgres import PostgresTools
+from utils.config import mongo_uri, mongo_db_name, postgres_db, postgres_host, postgres_password, postgres_user, postgres_port
 from utils.custom_exception import CustomException
 import sys
 
@@ -151,9 +152,36 @@ class ProcessTool(Toolkit):
             
 
 
-class AnalysisTool(Toolkit):
-    pass
+class AnalyticsTool(Toolkit):
+    def __init__(self, **kwargs):
+        super().__init__(
+            name="analytics tool",
+            tools=[self.analyse]
+        )
 
+    def preprocess(self):
+        pass
+    
+    def analyse(self):
+        """
+        Use this tool to run query on the db and retrieve useful infomration.
+        """
+        postgres_tool=PostgresTools(
+                host=postgres_host,
+                port=postgres_port,
+                db_name=postgres_db,
+                user=postgres_user,
+                password=postgres_password,
+                include_tools=[
+                    "show_tables",
+                    "describe_table",
+                    "summarize_table",
+                    "run_query"
+                ]
+            )
+        
+        return postgres_tool
+  
     #------------------Start working from here------------------
 
 # if __name__ == "__main__":

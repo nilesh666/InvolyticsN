@@ -42,7 +42,7 @@ class Agents:
             agent = Agent(
                 model = Groq(id="llama-3.3-70b-versatile", api_key=groq_api),
                 tools=[],
-                description="You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis",
+                description="You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis, never execute CRUD operations on the DB",
                 instructions="Always summarize the data retrieved from Postgres instead of printing it directly.",
                 # markdown=True
             )
