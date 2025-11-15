@@ -41,7 +41,7 @@ class Agents:
         try:
             agent = Agent(
                 model = Groq(id="llama-3.3-70b-versatile", api_key=groq_api),
-                tools=[],
+                tools=[AnalyticsTool()],
                 description="You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis, never execute CRUD operations on the DB",
                 instructions="Always summarize the data retrieved from Postgres instead of printing it directly.",
                 # markdown=True
@@ -54,10 +54,12 @@ class Agents:
 if __name__ == "__main__":
     try:
         logging.info("Testing Mongo Agent")
-        mongo_query = "Process the files"""
-        mongo_response = Agents().mongo_agent(mongo_query)
+        # mongo_query = "Process the files"""
+        # mongo_response = Agents().mongo_agent(mongo_query)
         # print("Mongo Agent Response:\n", mongo_response)
-        pprint_run_response(mongo_response, markdown=True)
+        postgres_query=""
+        postgres_response=Agents().postgres_agent()
+        pprint_run_response(postgres_response, markdown=True)
 
         # logging.info("Testing Postgres Agent")
         # postgres_query = "List all tables in the public schema."

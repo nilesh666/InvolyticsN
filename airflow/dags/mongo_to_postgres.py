@@ -8,7 +8,7 @@ import json
 
 with DAG(
     dag_id = "agno_mongo_test",
-    start_date = datetime(2025, 11,2),
+    # start_date = datetime(2025, 11,15),
     schedule='@weekly'
 ) as dag:
     
@@ -18,7 +18,7 @@ with DAG(
         create_table_query = """
         CREATE TABLE IF NOT EXISTS sales_data(
             file_name TEXT,
-            invoice_number SERIAL PRIMARY KEY,
+            invoice_number TEXT PRIMARY KEY,
             seller_name TEXT,
             client_name TEXT,
             date_of_issue DATE,
@@ -38,6 +38,7 @@ with DAG(
         # records=postgres_hook.get_records(get_invoice_number_query)
         # invoice_numbers=[r[0] for r in records]
         # return invoice_numbers
+        return "Done"
 
     @task
     def get_mongo_contents():
