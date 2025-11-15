@@ -42,8 +42,22 @@ class Agents:
             agent = Agent(
                 model = Groq(id="llama-3.3-70b-versatile", api_key=groq_api),
                 tools=[AnalyticsTool()],
-                description="You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis, never execute CRUD operations on the DB",
-                instructions="Always summarize the data retrieved from Postgres instead of printing it directly.",
+                description="""You are an analysis agent and Postgres DB expert and can help with queries and retrieve information for analysis,
+                                 never execute CRUD operations on the DB.
+                                 You have access to a table called sales_data.
+                                 The sales_data table has 9 columns that are:
+                                    - "file_name": contains the name of the invoice/bill
+                                    - "invoice_number": unique number identification for the respective invoice
+                                    - "seller_name": name of the seller in the invoice
+                                    - "client_name": name of the client in the invoice,
+                                    - "date_of_issue": issued date of the invoice,
+                                    - "vat_percentage": value added tax percentage in the invoice/bill,
+                                    - "net_worth": total cost of items before taxes in the invoice/bill,
+                                    - "vat": value added tax amount in the invoice/bill,
+                                    - "gross_worth": the total amount for the invoice/bill
+                                generate a query for the follwoing user query based on the given table description.
+                                With the generated query use analyse tool to get the contents from the db""",
+                                    instructions="Always summarize the data retrieved from Postgres instead of printing it directly. If you don't know or the query returns nothing simply print sorry i am not able to answer it",
                 # markdown=True
             )
             response = agent.run(query)
@@ -57,8 +71,8 @@ if __name__ == "__main__":
         # mongo_query = "Process the files"""
         # mongo_response = Agents().mongo_agent(mongo_query)
         # print("Mongo Agent Response:\n", mongo_response)
-        postgres_query=""
-        postgres_response=Agents().postgres_agent()
+        postgres_query="Who sold the highest"
+        postgres_response=Agents().postgres_agent(postgres_query)
         pprint_run_response(postgres_response, markdown=True)
 
         # logging.info("Testing Postgres Agent")

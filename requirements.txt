@@ -13,3 +13,5 @@ openinference-instrumentation-agno
 google-generativeai
 google-genai
 openai
+psycopg-binary
+psycopg

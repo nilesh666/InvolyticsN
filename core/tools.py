@@ -162,25 +162,28 @@ class AnalyticsTool(Toolkit):
     def preprocess(self):
         pass
     
-    def analyse(self):
+    def analyse(self, query: str):
         """
-        Use this tool to run query on the db and retrieve useful infomration.
+        Use this tool to execute the sql queries.
+
+        Args:
+            - query: SQL query to get the results from the db
         """
-        postgres_tool=PostgresTools(
-                host=postgres_host,
-                port=postgres_port,
-                db_name=postgres_db,
-                user=postgres_user,
-                password=postgres_password,
-                include_tools=[
-                    "show_tables",
-                    "describe_table",
-                    "summarize_table",
-                    "run_query"
-                ]
-            )
+        import psycopg
+        conn = psycopg.connect(
+            host=postgres_host,
+            port=5433,
+            dbname=postgres_db,
+            user=postgres_user,
+            password=postgres_password
+        )
+        cur=conn.cursor()
+        cur.execute(query)
+        a=cur.fetchall()
+        cur.close()
+        conn.close()
+        return a
         
-        return postgres_tool
   
     #------------------Start working from here------------------
 
