@@ -9,7 +9,7 @@ import json
 with DAG(
     dag_id = "agno_mongo_test",
     # start_date = datetime(2025, 11,15),
-    schedule='@weekly'
+    schedule='@daily'
 ) as dag:
     
     @task
